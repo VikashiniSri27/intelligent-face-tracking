@@ -1,63 +1,76 @@
 # Intelligent Face Tracking System
 
-An AI-based visitor tracking system that detects, recognizes, tracks faces in real-time and accurately counts unique visitors from video/camera streams.
+An AI-based visitor tracking system that detects, recognizes, tracks faces in real time, and accurately counts unique visitors from video/camera streams.
 
-## ✅ **DEMO RESULTS - PROOF OF RECOGNITION**
+## ✅ Demo Results — Proof of Recognition
 
-**Successfully tested:** Same person entering → exiting → re-entering is recognized as ONE unique visitor!
+The system was successfully tested with the same person entering, exiting, and re-entering.
 
-### 🎯 Demo Sequence
-```
+### Demo Sequence
+
+```text
 01:22:24 → Person enters     → VISITOR_001 registered
 01:22:57 → Person exits      → EXIT logged
-01:23:02 → Person returns    → VISITOR_001 recognized (confidence: 0.58)
-                              → NOT counted as VISITOR_002!
+01:23:02 → Person returns    → VISITOR_001 recognized (similarity: 0.58)
+                              → NOT counted as VISITOR_002
 ```
 
-### 📊 Final Statistics
-- **Unique Visitors**: 1 ✅
-- **Total Events**: 3 (2 entries + 1 exit)
-- **Recognition**: ✅ Same person correctly identified on return
-- **No Duplicates**: ✅ Count stayed at 1 (not 2)
+### Final Statistics
 
-**Key Evidence**: The system recognized the returning person with embedding similarity match, proving the face recognition and unique counting works correctly!
+* **Unique Visitors:** 1
+* **Total Events:** 3
+* **Total Entries:** 2
+* **Total Exits:** 1
+* **Recognition:** Same person correctly identified on return
+* **No Duplicate Counting:** Unique visitor count remained 1
 
-[See detailed demo analysis →](#demo-analysis)
+The returning visitor was matched with the stored face embedding using cosine similarity, demonstrating re-identification and unique visitor counting.
+
+---
 
 ## 📋 Problem Statement
 
 This system addresses the challenge of accurately counting unique visitors in a video stream by:
 
-1. **Detecting faces** using YOLO
-2. **Recognizing faces** using InsightFace embeddings
-3. **Automatically registering** new visitors with unique IDs
-4. **Tracking faces** across frames
-5. **Logging entry/exit events** with timestamps and images
-6. **Counting unique visitors** without duplicate counting
+1. Detecting faces using YOLO
+2. Recognizing faces using InsightFace embeddings
+3. Automatically registering new visitors with unique IDs
+4. Tracking faces across frames
+5. Logging entry/exit events with timestamps and images
+6. Counting unique visitors without duplicate counting
 
 ### Key Challenge
-When the same person appears multiple times, the system must recognize them as the same visitor, not create a new entry.
+
+When the same person appears multiple times, the system must recognize them as the same visitor instead of creating a new visitor ID.
 
 **Example:**
-- Person A enters → VISITOR_001
-- Person B enters → VISITOR_002  
-- Person A leaves
-- Person A returns → Still VISITOR_001 ✓ (not VISITOR_003 ✗)
-- **Unique Count: 2**
+
+```text
+Person A enters → VISITOR_001
+Person B enters → VISITOR_002
+Person A leaves
+Person A returns → VISITOR_001
+Unique Count → 2
+```
+
+---
 
 ## 🎯 Main Objective
 
 Build an AI system that:
-- Detects faces in real-time video/RTSP streams
-- Recognizes whether faces are new or known
-- Automatically registers new faces with unique IDs
-- Tracks individuals while in frame
-- Logs every entry/exit with timestamped images
-- Maintains accurate unique visitor count
+
+* Detects faces in video/RTSP streams
+* Recognizes whether faces are new or known
+* Automatically registers new faces with unique IDs
+* Tracks individuals while they are in frame
+* Logs every entry/exit with timestamped images
+* Maintains an accurate unique visitor count
+
+---
 
 ## 🏗️ System Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                   VIDEO / RTSP CAMERA                   │
 └────────────────────┬────────────────────────────────────┘
@@ -89,8 +102,7 @@ Build an AI system that:
         ▼                         ▼
    ┌─────────┐              ┌──────────┐
    │NEW FACE │              │KNOWN FACE│
-   │         │              │          │
-   │Register │              │Recognize │
+   │ Register│              │ Recognize│
    │  NEW ID │              │ EXIST ID │
    └────┬────┘              └─────┬────┘
         │                         │
@@ -122,52 +134,60 @@ Build an AI system that:
             └────────────────┘
 ```
 
+---
+
 ## 🔧 Technology Stack
 
-| Component | Technology |
-|-----------|-----------|
-| Programming Language | Python 3.8+ |
-| Face Detection | YOLOv8 (Ultralytics) |
-| Face Recognition | InsightFace (ArcFace) |
-| Tracking | Centroid Tracker |
-| Database | SQLite |
-| Configuration | JSON |
-| Image Processing | OpenCV |
-| Embeddings | NumPy, scikit-learn |
+| Component            | Technology            |
+| -------------------- | --------------------- |
+| Programming Language | Python 3.8+           |
+| Face Detection       | YOLOv8 (Ultralytics)  |
+| Face Recognition     | InsightFace (ArcFace) |
+| Tracking             | Centroid Tracker      |
+| Database             | SQLite                |
+| Configuration        | JSON                  |
+| Image Processing     | OpenCV                |
+| Embeddings           | NumPy, scikit-learn   |
+
+---
 
 ## 📁 Project Structure
 
-```
+```text
 face_tracker/
 │
-├── main.py                 # Main application entry point
+├── main.py                 # Main application
 ├── database.py             # SQLite database operations
-├── recognizer.py           # InsightFace embedding & recognition
-├── tracker.py              # Centroid-based object tracking
-├── logger.py               # Event logging system
+├── recognizer.py           # InsightFace recognition
+├── tracker.py              # Centroid-based tracking
+├── logger.py               # Event logging
+├── dashboard.py            # Visitor statistics dashboard
+├── view_data.py            # Database/event summary
 │
 ├── config.json             # System configuration
 ├── requirements.txt        # Python dependencies
-├── README.md              # This file
+├── README.md               # Project documentation
 │
-├── logs/                  # Stored face images
-│   ├── entries/           # Entry event images
+├── logs/
+│   ├── entries/            # Entry event images
 │   │   └── YYYY-MM-DD/
-│   └── exits/             # Exit event images
+│   └── exits/              # Exit event images
 │       └── YYYY-MM-DD/
 │
-├── database/              # SQLite database
-│   └── visitors.db        # Visitor & event data
+├── database/
+│   └── visitors.db         # Visitor and event data
 │
-├── output/                # Processed videos
-│   └── processed_video.mp4
+├── output/
+│   └── processed_video.mp4 # Processed video
 │
-└── events.log             # System event log
+└── events.log              # System event log
 ```
+
+---
 
 ## ⚙️ Configuration
 
-Edit `config.json` to customize system behavior:
+The system behavior can be customized using `config.json`.
 
 ```json
 {
@@ -187,243 +207,288 @@ Edit `config.json` to customize system behavior:
 
 ### Configuration Parameters
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `video_source` | Path to video file | `sample.mp4` |
-| `rtsp_url` | RTSP camera URL (overrides video_source if set) | `""` |
-| `detection_skip_frames` | Process every Nth frame (reduces computation) | `5` |
-| `similarity_threshold` | Minimum similarity (0-1) to match faces | `0.5` |
-| `confidence_threshold` | Minimum detection confidence | `0.5` |
-| `min_face_size` | Minimum face size in pixels | `30` |
-| `max_disappear_frames` | Frames before considering exit | `30` |
+| Parameter               | Description                          | Default      |
+| ----------------------- | ------------------------------------ | ------------ |
+| `video_source`          | Path to video file                   | `sample.mp4` |
+| `rtsp_url`              | RTSP camera URL                      | `""`         |
+| `detection_skip_frames` | Process every Nth frame              | `5`          |
+| `similarity_threshold`  | Minimum similarity for face matching | `0.5`        |
+| `confidence_threshold`  | Minimum YOLO confidence              | `0.5`        |
+| `min_face_size`         | Minimum face size in pixels          | `30`         |
+| `max_disappear_frames`  | Frames before considering exit       | `30`         |
+
+---
 
 ## 🚀 Setup Instructions
 
 ### Prerequisites
-- Python 3.8 or higher
-- pip package manager
-- (Optional) CUDA-capable GPU for faster processing
 
-### Installation Steps
+* Python 3.8 or higher
+* pip
+* Optional NVIDIA CUDA-capable GPU
 
-1. **Clone or download this project**
+### 1. Clone or Download the Project
+
 ```bash
 cd face_tracker
 ```
 
-2. **Create virtual environment (recommended)**
+### 2. Create a Virtual Environment
+
+**Windows:**
+
 ```bash
 python -m venv venv
-
-# On Windows
 venv\Scripts\activate
+```
 
-# On Linux/Mac
+**Linux/Mac:**
+
+```bash
+python -m venv venv
 source venv/bin/activate
 ```
 
-3. **Install dependencies**
+### 3. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Download InsightFace models**
+### 4. InsightFace Model
 
-The first run will automatically download the InsightFace model (~250MB). Ensure you have internet connection.
+On the first run, InsightFace downloads the required model automatically.
 
-5. **Prepare your video**
+Internet access is required for the initial model download.
 
-Place your video file in the project directory and update `config.json`:
+### 5. Prepare Video
+
+Place the video file in the project directory and configure:
+
 ```json
 {
-    "video_source": "your_video.mp4"
+    "video_source": "sample.mp4"
 }
 ```
 
-Or use RTSP camera:
+### RTSP Camera
+
+For an RTSP camera:
+
 ```json
 {
     "rtsp_url": "rtsp://your_camera_ip:554/stream"
 }
 ```
 
-### Running the System
+### 6. Run the System
 
 ```bash
 python main.py
 ```
 
 The system will:
-- Process the video frame by frame
-- Display annotated video with bounding boxes and IDs
-- Save processed video to `output/processed_video.mp4`
-- Store face images in `logs/entries/` and `logs/exits/`
-- Log all events to `events.log`
-- Store visitor data in `database/visitors.db`
 
-**To stop**: Press `q` in the video window or `Ctrl+C` in terminal
+* Detect faces
+* Generate face embeddings
+* Recognize existing visitors
+* Register new visitors
+* Track visitors
+* Log entry and exit events
+* Save face images
+* Store data in SQLite
+* Save the processed video
+
+---
 
 ## 📊 System Output
 
 ### 1. Processed Video
-Located in `output/processed_video.mp4`
-- Bounding boxes around detected faces
-- Visitor IDs displayed above each face
-- Real-time unique visitor count
+
+The processed video is saved at:
+
+```text
+output/processed_video.mp4
+```
+
+It contains:
+
+* Face bounding boxes
+* Visitor IDs
+* Unique visitor count
 
 ### 2. Face Images
-```
+
+Entry and exit images are stored separately:
+
+```text
 logs/
 ├── entries/
-│   └── 2026-10-03/
-│       ├── VISITOR_001_20261003_101522_123456.jpg
-│       └── VISITOR_002_20261003_101530_654321.jpg
+│   └── YYYY-MM-DD/
+│       └── VISITOR_001_*.jpg
+│
 └── exits/
-    └── 2026-10-03/
-        ├── VISITOR_001_20261003_101745_789012.jpg
-        └── VISITOR_002_20261003_101800_345678.jpg
+    └── YYYY-MM-DD/
+        └── VISITOR_001_*.jpg
 ```
 
-### 3. Events Log (events.log)
+### 3. Event Log
+
+The mandatory `events.log` records system activity.
+
+Example:
+
+```text
+[time] INTELLIGENT FACE TRACKING SYSTEM STARTED
+[time] Face detected
+[time] New face registered: VISITOR_001
+[time] Face embedding generated for VISITOR_001
+[time] ENTRY - VISITOR_001
+[time] Tracking started: VISITOR_001
+[time] EXIT - VISITOR_001
+[time] Tracking lost: VISITOR_001
+[time] Face recognized: VISITOR_001
 ```
-[2026-10-03 10:15:22] INTELLIGENT FACE TRACKING SYSTEM STARTED
-[2026-10-03 10:15:22] Video source: sample.mp4
-[2026-10-03 10:15:22] [Frame 5] Face detected
-[2026-10-03 10:15:22] New face registered: VISITOR_001
-[2026-10-03 10:15:22] Face embedding generated for VISITOR_001
-[2026-10-03 10:15:22] ENTRY - VISITOR_001
-[2026-10-03 10:15:22] Tracking started: VISITOR_001 (Track ID: 0)
-[2026-10-03 10:15:30] [Frame 50] Face detected
-[2026-10-03 10:15:30] New face registered: VISITOR_002
-[2026-10-03 10:15:30] ENTRY - VISITOR_002
-[2026-10-03 10:17:45] EXIT - VISITOR_001
-[2026-10-03 10:17:45] Tracking lost: VISITOR_001 (Track ID: 0)
-```
 
-### 4. Database (SQLite)
+### 4. SQLite Database
 
-**visitors table:**
-| visitor_id | first_seen | last_seen | total_visits | embedding |
-|------------|-----------|-----------|--------------|-----------|
-| VISITOR_001 | 2026-10-03 10:15:22 | 2026-10-03 10:17:45 | 1 | [binary] |
-| VISITOR_002 | 2026-10-03 10:15:30 | 2026-10-03 10:18:00 | 1 | [binary] |
+The database stores visitor information and events.
 
-**events table:**
-| event_id | visitor_id | event_type | timestamp | image_path |
-|----------|-----------|-----------|-----------|------------|
-| 1 | VISITOR_001 | ENTRY | 2026-10-03 10:15:22 | logs/entries/... |
-| 2 | VISITOR_002 | ENTRY | 2026-10-03 10:15:30 | logs/entries/... |
-| 3 | VISITOR_001 | EXIT | 2026-10-03 10:17:45 | logs/exits/... |
+#### Visitors Table
 
-### 5. Console Output
-```
-============================================================
-INTELLIGENT FACE TRACKING SYSTEM
-============================================================
+| visitor_id  | first_seen | last_seen   | total_visits |
+| ----------- | ---------- | ----------- | ------------ |
+| VISITOR_001 | Demo entry | Demo return | 1            |
 
-Video properties: 1920x1080 @ 30 FPS
-[2026-10-03 10:15:22] Face detected
-[2026-10-03 10:15:22] New face registered: VISITOR_001
-...
+#### Events Table
 
-============================================================
-FINAL STATISTICS
-============================================================
-Total Unique Visitors: 2
-Total Events Logged: 4
+| event_id | visitor_id  | event_type | timestamp | image_path       |
+| -------- | ----------- | ---------- | --------- | ---------------- |
+| 1        | VISITOR_001 | ENTRY      | 01:22:24  | logs/entries/... |
+| 2        | VISITOR_001 | EXIT       | 01:22:57  | logs/exits/...   |
+| 3        | VISITOR_001 | ENTRY      | 01:23:02  | logs/entries/... |
+
+### 5. Final Demo Statistics
+
+```text
+Unique Visitors: 1
+Total Events: 3
 Total Entries: 2
-Total Exits: 2
-============================================================
+Total Exits: 1
+Currently Inside: 1
 ```
+
+---
 
 ## 🧠 How It Works
 
-### 1. Face Detection (YOLO)
-- Processes frames at configurable intervals (`detection_skip_frames`)
-- Detects faces with bounding boxes
-- Filters by confidence threshold
+### 1. Face Detection — YOLO
 
-### 2. Face Recognition (InsightFace)
-- Crops detected face from frame
-- Generates 512-dimensional embedding vector
-- Compares with stored embeddings using cosine similarity
+YOLO detects faces from the input video.
 
-### 3. Registration vs Recognition Workflow
+* Frames are processed at configurable intervals.
+* Face bounding boxes are generated.
+* Low-confidence detections are filtered.
 
-**For every detected face:**
+### 2. Face Recognition — InsightFace
 
-1. **Generate Embedding** → Create 512-dimensional vector from current face
-2. **Database Search** → Compare against all stored visitor embeddings
-3. **Decision**:
-   - **Similarity ≥ threshold** → Recognize as existing visitor
-   - **Similarity < threshold** → Register as new visitor
+For every detected face:
 
-```python
-# Pseudo-code
-face_detected = yolo.detect(frame)
-current_embedding = insightface.generate_embedding(face_detected)
+* The face is cropped.
+* InsightFace generates a 512-dimensional embedding.
+* The embedding is compared with stored visitor embeddings.
 
-for stored_visitor in database:
-    similarity = cosine_similarity(current_embedding, stored_visitor.embedding)
-    if similarity >= threshold:
-        return stored_visitor.id  # Recognized!
+### 3. Registration vs Recognition
 
-# No match found - new visitor
-new_id = create_new_visitor()
-database.save(new_id, current_embedding)
-return new_id
+```text
+              Face Detected
+                    │
+                    ▼
+          Generate Embedding
+                    │
+                    ▼
+       Compare with Database
+                    │
+                    ▼
+          Similarity Check
+             /          \
+           YES           NO
+            │             │
+            ▼             ▼
+      Existing ID     New Visitor
+     VISITOR_001      VISITOR_002
 ```
 
-**Important**: An embedding is generated for **every** face appearance. This allows the system to compare the current observation against the stored identity embeddings, enabling recognition of returning visitors.
+If similarity is greater than or equal to the configured threshold, the existing visitor is recognized.
+
+Otherwise, a new visitor ID is created.
 
 ### 4. Tracking
-- Maintains identity across frames using centroid tracking
-- Maps tracking IDs to visitor IDs
-- Handles temporary occlusions
 
-### 5. Entry/Exit Detection
-- **Entry**: First time a track ID appears
-- **Exit**: Track ID disappears for more than `max_disappear_frames`
+The Centroid Tracker:
+
+* Maintains identity across frames
+* Maps tracking IDs to visitor IDs
+* Handles temporary disappearance
+
+### 5. Entry and Exit Detection
+
+* **Entry:** First appearance of a track
+* **Exit:** Track disappears for more than `max_disappear_frames`
 
 ### 6. Unique Counting
-- Each unique face receives one visitor ID
-- Same person returning is recognized (not counted again)
-- Count = Number of unique visitor IDs in database
+
+Each unique visitor receives one visitor ID.
+
+When the same person leaves and returns:
+
+```text
+VISITOR_001 enters
+       ↓
+VISITOR_001 exits
+       ↓
+VISITOR_001 returns
+       ↓
+VISITOR_001 recognized again
+       ↓
+Unique count remains 1
+```
+
+---
 
 ## 🔍 Key Assumptions
 
-1. **Same Person Recognition**: A face is considered the same person when the embedding similarity exceeds `similarity_threshold` (default: 0.5)
+1. A face is considered the same person when embedding similarity exceeds the configured threshold.
+2. The default similarity threshold is `0.5`.
+3. A person is considered exited after disappearing for `30` consecutive frames by default.
+4. Face images should be reasonably clear.
+5. Minimum face size is configured as `30 × 30` pixels.
+6. Consistent lighting provides better recognition performance.
+7. Front or near-front camera angles work best.
+8. MP4, AVI, and RTSP streams are supported.
 
-2. **Exit Detection**: A person is considered to have exited when they disappear from frame for `max_disappear_frames` consecutive frames (default: 30)
-
-3. **Face Quality**: System assumes reasonably clear face images (minimum 30x30 pixels)
-
-4. **Single Face per Person**: Each person has one primary face representation
-
-5. **Lighting Conditions**: Best performance in consistent lighting; extreme lighting changes may affect recognition
-
-6. **Camera Angle**: Front or near-front facing angles work best
-
-7. **Video Format**: System supports standard video formats (MP4, AVI) and RTSP streams
+---
 
 ## 💻 Compute Requirements
 
-### Minimum Requirements
-- **CPU**: Intel Core i5 or equivalent
-- **RAM**: 8GB
-- **Storage**: 2GB free space
-- **Processing Speed**: ~5-10 FPS on CPU
+### Minimum
 
-### Recommended Requirements
-- **CPU**: Intel Core i7 or equivalent
-- **GPU**: NVIDIA GPU with CUDA support
-- **RAM**: 16GB
-- **Storage**: 5GB free space
-- **Processing Speed**: ~30+ FPS with GPU
+* **CPU:** Intel Core i5 or equivalent
+* **RAM:** 8 GB
+* **Storage:** 2 GB free space
+* **Processing:** Approximately 5–10 FPS on CPU
+
+### Recommended
+
+* **CPU:** Intel Core i7 or equivalent
+* **GPU:** NVIDIA GPU with CUDA support
+* **RAM:** 16 GB
+* **Storage:** 5 GB free space
+* **Processing:** Approximately 30+ FPS with GPU
 
 ### GPU Acceleration
 
-To enable GPU acceleration, modify `recognizer.py`:
+InsightFace can be configured to use CUDA:
 
 ```python
 self.app = FaceAnalysis(
@@ -432,96 +497,270 @@ self.app = FaceAnalysis(
 )
 ```
 
-And install CUDA-enabled dependencies:
+Install the GPU runtime:
+
 ```bash
 pip install onnxruntime-gpu
 ```
 
-## 🧪 Testing with Sample Data
+---
 
-### Test with Sample Video
+## 🧪 Testing
 
-1. Place `sample.mp4` in project directory
+### Sample Video
+
+1. Place `sample.mp4` in the project directory.
 2. Update `config.json`:
-   ```json
-   {"video_source": "sample.mp4"}
-   ```
-3. Run: `python main.py`
 
-### Test with RTSP Camera
+```json
+{
+    "video_source": "sample.mp4"
+}
+```
 
-1. Update `config.json`:
-   ```json
-   {"rtsp_url": "rtsp://192.168.1.100:554/stream"}
-   ```
-2. Run: `python main.py`
-
-### Test Individual Modules
+3. Run:
 
 ```bash
-# Test database
+python main.py
+```
+
+### RTSP Camera
+
+Configure:
+
+```json
+{
+    "rtsp_url": "rtsp://192.168.1.100:554/stream"
+}
+```
+
+Then run:
+
+```bash
+python main.py
+```
+
+### Individual Modules
+
+```bash
 python database.py
-
-# Test logger
 python logger.py
-
-# Test tracker
 python tracker.py
 ```
 
+---
+
 ## 📈 Performance Optimization
 
-1. **Reduce Detection Frequency**: Increase `detection_skip_frames` (e.g., 10)
-2. **Lower Resolution**: Resize frames before processing
-3. **GPU Acceleration**: Enable CUDA support
-4. **Adjust Thresholds**: Tune `confidence_threshold` and `similarity_threshold`
+1. Increase `detection_skip_frames` to reduce detection frequency.
+2. Resize frames to a lower resolution.
+3. Enable GPU acceleration when available.
+4. Tune `confidence_threshold`.
+5. Tune `similarity_threshold` based on the camera environment.
+
+---
 
 ## 🐛 Troubleshooting
 
-### Issue: "Failed to open video source"
-- Check video file path in `config.json`
-- Ensure video file exists and is readable
-- For RTSP: Verify camera URL and network connectivity
+### Failed to Open Video Source
 
-### Issue: "InsightFace model download fails"
-- Ensure internet connection
-- Check firewall settings
-- Manually download model from InsightFace GitHub
+* Check the video path in `config.json`.
+* Make sure the video exists.
+* Check that the video is readable.
+* For RTSP, verify the camera URL and network connection.
 
-### Issue: "Low FPS / Slow processing"
-- Increase `detection_skip_frames`
-- Enable GPU acceleration
-- Reduce video resolution
+### InsightFace Model Download Fails
 
-### Issue: "Same person counted twice"
-- Lower `similarity_threshold` (e.g., 0.4)
-- Check face image quality
-- Ensure consistent lighting
+* Check your internet connection.
+* Check firewall settings.
+* Retry the first run.
 
-### Issue: "Different people recognized as same"
-- Increase `similarity_threshold` (e.g., 0.6)
-- Improve face detection quality
+### Low FPS / Slow Processing
+
+* Increase `detection_skip_frames`.
+* Enable GPU acceleration.
+* Reduce video resolution.
+
+### Same Person Counted Twice
+
+* Check face image quality.
+* Ensure consistent lighting.
+* Tune the similarity threshold.
+
+### Different People Recognized as the Same
+
+* Increase the similarity threshold.
+* Improve face detection quality.
+* Test with clearer face images.
+
+---
 
 ## 📝 Development Workflow
 
-This project was developed using AI-assisted coding with the following workflow:
+This project was developed using AI-assisted coding.
 
-1. **Problem Analysis**: Understanding hackathon requirements
-2. **Architecture Design**: Modular system design
-3. **Module Implementation**: Step-by-step implementation
-   - Database layer
-   - Logging system
-   - Face recognition
-   - Tracking system
-   - Main application
-4. **Testing**: Individual module and integration testing
-5. **Documentation**: Comprehensive README and code comments
+### Development Process
 
+1. **Problem Analysis**
+
+   * Studied the hackathon requirements.
+   * Identified face detection, recognition, tracking, and counting requirements.
+
+2. **Architecture Design**
+
+   * Designed a modular Python architecture.
+   * Separated database, recognition, tracking, logging, and main processing.
+
+3. **Module Implementation**
+
+   * Database layer
+   * Event logging
+   * Face recognition
+   * Centroid tracking
+   * Main application
+   * Dashboard and database viewer
+
+4. **Testing**
+
+   * Tested individual modules.
+   * Tested complete video processing.
+   * Tested visitor re-identification.
+
+5. **Documentation**
+
+   * Added setup instructions.
+   * Added architecture and configuration details.
+   * Added demo evidence and requirement coverage.
+
+---
 
 ## 🎥 Demo Video
-[![Demo Video](https://img.youtube.com/vi/XUlbgz139eI/0.jpg)](https://youtu.be/XUlbgz139eI)
-▶️ **Watch Demo**: https://youtu.be/XUlbgz139eI
 
+**Watch the demo:**
+
+[https://youtu.be/XUlbgz139eI](https://youtu.be/XUlbgz139eI)
+
+The demo demonstrates:
+
+* New visitor registration
+* Face embedding generation
+* Entry logging
+* Face tracking
+* Exit detection
+* Re-identification of a returning visitor
+* No duplicate visitor creation
+* SQLite database records
+* Event logging
+* Final unique visitor count
+
+---
+
+# 📊 Demo Analysis
+
+## Actual Test Results
+
+The demo video is approximately **27.7 seconds** and contains **830 frames**.
+
+The main test demonstrates the system's ability to recognize the same visitor after they leave and return.
+
+### Event Timeline
+
+| Time     | Event               | Visitor ID  | Action                         |
+| -------- | ------------------- | ----------- | ------------------------------ |
+| 01:22:24 | Face detected       | NEW         | Registration triggered         |
+| 01:22:24 | New face registered | VISITOR_001 | Embedding generated and stored |
+| 01:22:24 | Entry event         | VISITOR_001 | Entry logged                   |
+| 01:22:24 | Tracking started    | Track ID: 0 | Tracking activated             |
+| 01:22:57 | Exit event          | VISITOR_001 | Person left frame              |
+| 01:22:57 | Tracking lost       | Track ID: 0 | Tracking ended                 |
+| 01:23:02 | Face detected       | RETURNING   | Face appeared again            |
+| 01:23:02 | Recognized visitor  | VISITOR_001 | Similarity: 0.58               |
+| 01:23:02 | Re-entry event      | VISITOR_001 | Second entry logged            |
+| 01:23:02 | Tracking restarted  | Track ID: 2 | Same visitor ID                |
+
+---
+
+## Why This Proves Recognition Works
+
+```text
+First appearance
+       ↓
+VISITOR_001 created
+       ↓
+Person leaves
+       ↓
+EXIT logged
+       ↓
+Person returns
+       ↓
+New embedding generated
+       ↓
+Compared with stored embedding
+       ↓
+Similarity = 0.58
+       ↓
+VISITOR_001 recognized
+       ↓
+No new visitor ID
+       ↓
+Unique count remains 1
+```
+
+### Evidence
+
+1. Embedding generated during the first registration.
+2. The returning face generates a fresh embedding.
+3. The new embedding is compared with the stored visitor embedding.
+4. Similarity score is **0.58**.
+5. Configured threshold is **0.5**.
+6. The existing `VISITOR_001` is recognized.
+7. No duplicate visitor ID is created.
+8. Unique visitor count remains **1**.
+
+---
+
+## Database Proof
+
+### Visitors
+
+```text
+Visitor ID
+VISITOR_001
+
+Total Unique Visitors: 1
+```
+
+### Events
+
+```text
+VISITOR_001  ENTRY  01:22:24
+VISITOR_001  EXIT   01:22:57
+VISITOR_001  ENTRY  01:23:02
+
+Total Events: 3
+Entries: 2
+Exits: 1
+```
+
+---
+
+## Requirement Coverage
+
+| Requirement           | Implementation                    | Demo Evidence                            |
+| --------------------- | --------------------------------- | ---------------------------------------- |
+| Face Detection        | YOLO                              | Face detection in processed frames       |
+| New Face Registration | Automatic visitor ID creation     | `VISITOR_001` registered                 |
+| Embedding Generation  | InsightFace                       | Embeddings generated                     |
+| Face Recognition      | Cosine similarity                 | Similarity 0.58 matched stored embedding |
+| No Duplicate Counting | Same person keeps same visitor ID | Unique count remained 1                  |
+| Entry Logging         | Timestamp + image                 | 2 entry events                           |
+| Exit Logging          | Timestamp + image                 | 1 exit event                             |
+| Tracking              | Centroid Tracker                  | Track IDs mapped to visitor ID           |
+| Database Storage      | SQLite                            | Visitor/event data stored                |
+| Event Logging         | `events.log`                      | System events recorded                   |
+| Unique Counting       | Unique visitor IDs                | Final count: 1                           |
+
+---
 
 ## 📄 License
 
@@ -529,94 +768,14 @@ This project is created for educational purposes as part of a hackathon.
 
 ## 🙏 Acknowledgments
 
-- **YOLO**: Ultralytics YOLOv8
-- **InsightFace**: Face recognition library
-- **OpenCV**: Computer vision operations
+* **YOLO:** Ultralytics YOLOv8
+* **InsightFace:** Face recognition library
+* **OpenCV:** Computer vision operations
 
 ---
 
-## 📊 Demo Analysis
-
-### Actual Test Results
-
-Our demo video (27.7 seconds, 830 frames) proves the system correctly handles the re-identification challenge:
-
-#### Event Timeline
-
-| Time | Event | Visitor ID | Action Taken |
-|------|-------|-----------|--------------|
-| 01:22:24 | Face detected (Frame 5) | NEW | Registration triggered |
-| 01:22:24 | New face registered | VISITOR_001 | Embedding generated & stored |
-| 01:22:24 | Entry event | VISITOR_001 | Entry logged to database |
-| 01:22:24 | Tracking started | Track ID: 0 | Centroid tracker activated |
-| 01:22:57 | Exit event | VISITOR_001 | Person left frame completely |
-| 01:22:57 | Tracking lost | Track ID: 0 | Tracker deactivated |
-| 01:23:02 | Face detected (Frame 575) | RETURNING | Face appeared again |
-| 01:23:02 | **Recognized visitor** | **VISITOR_001** | **Similarity: 0.58 (matched!)** |
-| 01:23:02 | Re-entry event | VISITOR_001 | Second entry logged |
-| 01:23:02 | Tracking restarted | Track ID: 2 | New track, same visitor ID |
-
-#### Why This Proves Recognition Works
-
-**The Critical Test:**
-```
-First appearance  → VISITOR_001 created
-Person leaves     → EXIT logged
-Person returns    → System must decide: New person or same person?
-Result            → VISITOR_001 recognized (NOT VISITOR_002)
-```
-
-**Evidence:**
-1. ✅ Embedding generated on re-entry (Frame 575)
-2. ✅ Compared against stored VISITOR_001 embedding
-3. ✅ Similarity score: 0.58 (above threshold of 0.5)
-4. ✅ Recognized as existing visitor
-5. ✅ No new visitor ID created
-6. ✅ Unique count remains: 1
-
-### Database Proof
-
-**visitors table:**
-```
-Visitor ID      First Seen           Last Seen            Visits
-VISITOR_001     2026-10-03 01:22:24  2026-10-03 01:22:24  1
-
-Total Unique Visitors: 1
-```
-
-**events table:**
-```
-Visitor ID      Event      Timestamp            Image Path
-VISITOR_001     ENTRY      2026-10-03 01:22:24  logs/entries/2026-10-03/VISITOR_001_*.jpg
-VISITOR_001     EXIT       2026-10-03 01:22:57  logs/exits/2026-10-03/VISITOR_001_*.jpg
-VISITOR_001     ENTRY      2026-10-03 01:23:02  logs/entries/2026-10-03/VISITOR_001_*.jpg
-
-Total Events: 3 (2 entries + 1 exit)
-```
-
-### What Makes This Demo Strong
-
-| Requirement | Implementation | Evidence |
-|------------|----------------|----------|
-| Face Detection | YOLO detects faces | ✅ 380+ frames with face detected |
-| New Face Registration | Auto-create visitor ID | ✅ VISITOR_001 created at 01:22:24 |
-| Embedding Generation | InsightFace creates vector | ✅ Embedding generated twice (registration + recognition) |
-| Face Recognition | Compare embeddings | ✅ Similarity: 0.58 matched stored embedding |
-| No Duplicate Counting | Same person = same ID | ✅ Count stayed at 1, not 2 |
-| Entry Logging | Log with timestamp + image | ✅ 2 entry events logged |
-| Exit Logging | Log when leaving frame | ✅ 1 exit event logged |
-| Tracking | Track across frames | ✅ Tracking IDs: 0 and 2 mapped to VISITOR_001 |
-| Database Storage | SQLite persistence | ✅ All data in visitors.db |
-| Event Logging | Text log file | ✅ All events in events.log |
-| Unique Counting | Count distinct people | ✅ Final count: 1 unique visitor |
-
-
-**This project is a part of a hackathon run by https://katomaran.com**
+**This project is a part of a hackathon run by [https://katomaran.com](https://katomaran.com)**
 
 ## 📧 Contact
 
 For questions or issues, please open an issue in the repository.
-
----
-
-
