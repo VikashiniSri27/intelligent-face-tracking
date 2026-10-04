@@ -517,9 +517,11 @@ This project was developed using AI-assisted coding with the following workflow:
 4. **Testing**: Individual module and integration testing
 5. **Documentation**: Comprehensive README and code comments
 
-## 🎥 Demo Video
 
-[Demo video showing system in action will be available at: [YouTube/Loom Link]]
+## 🎥 Demo Video
+[![Demo Video](https://img.youtube.com/vi/XUlbgz139eI/0.jpg)](https://youtu.be/XUlbgz139eI)
+▶️ **Watch Demo**: https://youtu.be/XUlbgz139eI
+
 
 ## 📄 License
 
