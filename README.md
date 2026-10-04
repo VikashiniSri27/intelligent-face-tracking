@@ -1,6 +1,4 @@
-Absolutely — here is the **full final README.md**, with the changes applied and the interview section removed.
 
-````markdown
 # Intelligent Face Tracking System
 
 ## Demo Results
