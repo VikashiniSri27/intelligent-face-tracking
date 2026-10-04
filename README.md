@@ -610,13 +610,6 @@ Total Events: 3 (2 entries + 1 exit)
 | Event Logging | Text log file | ✅ All events in events.log |
 | Unique Counting | Count distinct people | ✅ Final count: 1 unique visitor |
 
-### Interview Explanation
-
-**Q: "Why does your log show 'Face embedding generated' twice for the same visitor?"**
-
-**A:** "When a face is detected, I generate its embedding from the current frame. For a new face, I register and store its identity in the database. When the same face appears again later, I generate a fresh embedding from the new observation and compare it with all stored embeddings using cosine similarity. Since the similarity score (0.58) passed our threshold (0.5), the system recognized it as VISITOR_001 instead of creating a new visitor ID. This is how the system achieves re-identification without duplicate counting."
-
----
 
 **This project is a part of a hackathon run by https://katomaran.com**
 
