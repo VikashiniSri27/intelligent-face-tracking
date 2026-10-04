@@ -626,4 +626,4 @@ For questions or issues, please open an issue in the repository.
 
 ---
 
-*Built with ❤️ using AI-assisted development*
+
