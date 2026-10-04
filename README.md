@@ -789,7 +789,7 @@ This project was developed as part of a hackathon project.
 
 ## Hackathon
 
-This project is a part of a hackathon run by [https://katomaran.com](https://katomaran.com)
+This project is a part of a hackathon run by https://katomaran.com
 
 ---
 
