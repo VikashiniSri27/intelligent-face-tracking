@@ -1,0 +1,13 @@
+{
+    "video_source": "sample.mp4",
+    "rtsp_url": "",
+    "detection_skip_frames": 5,
+    "similarity_threshold": 0.5,
+    "confidence_threshold": 0.5,
+    "min_face_size": 30,
+    "max_disappear_frames": 30,
+    "database_path": "database/visitors.db",
+    "log_path": "events.log",
+    "entries_folder": "logs/entries",
+    "exits_folder": "logs/exits"
+}
